@@ -11,8 +11,8 @@ export class ImageUploadService {
 
   constructor(private http: HttpClient) { }
 
+  //Upload the image to the server
   uploadImage(uploadData){
-    //console.log(uploadData);
     this.http.post('http://localhost:80/uploadImage.php', uploadData)
     .subscribe(event => {
     });
