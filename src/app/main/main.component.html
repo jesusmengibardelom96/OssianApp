@@ -1,0 +1,119 @@
+<!-- Loader when images are charging -->
+<div class="d-flex justify-content-center center-screen" *ngIf="!isPageLoaded">
+  <div class="spinner-border text-primary" role="status" aria-hidden="true"></div>
+  <strong>Loading images...</strong>
+</div>
+<!-- Loader when images are charging -->
+
+<div class="container-fluid my-4" *ngIf="isPageLoaded">
+
+  <!-- images charged -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+    <ng-container *ngFor="let img of images">
+
+      <!-- view more not clicked -->
+      <div class="card col-lg-4 col-md-6 col-sm-12 m-4 p-0 " *ngIf="!viewDescription; else ElseBlock">
+        <img src="{{img.url}}" class="card-img-top" style="height: 200px;">
+        <div class="card-body">
+          <div class="text-center">
+              <button class="btn btn-primary" (click)="seeDescription(img.id)">View more</button>
+              <button class="btn btn-primary ml-2" (click)="editImage(img)"><img src="../../assets/open-iconic/svg/pencil.svg" width="16px"></button>
+              <button class="btn btn-danger ml-2" (click)="deleteItem(img.id, img.title)"><img src="../../assets/open-iconic/svg/x.svg" width="16px"></button>
+          </div>
+        </div>
+      </div>
+      <!-- view more not clicked -->
+
+      <!-- view more clicked -->
+      <ng-template #ElseBlock>
+        <div class="card col-lg-4 col-md-6 col-sm-12 m-4 p-0" *ngIf="viewDescription && img.id === imageId">
+          <img src="{{img.url}}" class="card-img-top" style="height: 200px;" >
+          <div class="card-body">
+            <h5 class="card-title">{{img.title}}</h5>
+            <p class="card-text">{{img.description}}</p>
+            <p class="card-text"><small class="text-muted">{{img.category}}</small></p>
+            <div class="text-center" >
+              <button class="btn btn-primary" (click)="seeDescription(img.id)">View less</button>
+              <button class="btn btn-primary ml-2" (click)="editImage(img)"><img src="../../assets/open-iconic/svg/pencil.svg" width="16px"></button>
+              <button class="btn btn-danger ml-2" (click)="deleteItem(img.id, img.title)"><img src="../../assets/open-iconic/svg/x.svg" width="16px"></button>
+            </div>
+          </div>
+        </div>
+        <!-- view more clicked -->
+
+        <!-- view more not clicked -->
+        <div class="card col-lg-4 col-md-6 col-sm-12 m-4 p-0" *ngIf="viewDescription && img.id !== imageId"
+          style="height: 280px;">
+          <img src="{{img.url}}" class="card-img-top" style="height: 200px;">
+          <div class="card-body">
+            <div class="text-center">
+              <button class="btn btn-primary" (click)="seeDescription(img.id)">View more</button>
+              <button class="btn btn-primary ml-2" (click)="editImage(img)"><img src="../../assets/open-iconic/svg/pencil.svg" width="16px"></button>
+              <button class="btn btn-danger ml-2" (click)="deleteItem(img.id, img.title)"><img src="../../assets/open-iconic/svg/x.svg" width="16px"></button>
+            </div>
+          </div>
+        </div>
+        <!-- view more not clicked -->
+
+      </ng-template>
+    </ng-container>
+  </div>
+  <!-- images charged -->
+
+  <!-- Add image to the DB -->
+  <div class="container-fluid text-center mt-5">
+    <button class="btn btn-success text-center mb-4" (click)="isAddButtonClicked()" *ngIf="!buttonAddClicked">Add
+      image</button>
+    <button class="btn btn-danger text-center mb-4" (click)="isAddButtonClicked()"
+      *ngIf="buttonAddClicked">Cancel</button>
+  </div>
+  <form class="w-50 col-lg-6 offset-lg-3" *ngIf="buttonAddClicked" #image="ngForm" (ngSubmit)="insertImage(image)">
+    <div class="form-group">
+      <label for="image_title">Title</label>
+      <input name="imageTitle" type="text" class="form-control" id="image_title" maxlength="40" ngModel required>
+    </div>
+    <div class="form-group">
+      <label for="image_description">Description</label>
+      <textarea name="imageDescription" class="form-control" id="image_description" rows="3" ngModel required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="image_category">Category</label>
+      <input name="imageCategory" type="text" class="form-control" id="image_category" maxlength="40" ngModel required>
+    </div>
+    <div class="form-group">
+      <label for="image_select">Choose a image</label>
+      <input name="imageSelect" type="file" class="form-control-file" id="image_select" accept="image/*" ngModel
+        (change)="onFileChange($event)" required>
+    </div>
+    <div class="container-fluid text-center mt-5">
+      <button type="submit" class="btn btn-primary text-center mt-2">Submit</button>
+    </div>
+  </form>
+  <!-- Add image to the DB -->
+
+  <!-- Update image to the DB -->
+  <form class="w-50 col-lg-6 offset-lg-3" *ngIf="isEditingImage" [formGroup]="editImageForm" (ngSubmit)="updateImage(editImage)">
+    <div class="form-group">
+      <label for="new_image_title">Title</label>
+      <input formControlName="newImageTitle" type="text" class="form-control" id="new_image_title" maxlength="40" required>
+    </div>
+    <div class="form-group">
+      <label for="new_image_description">Description</label>
+      <textarea formControlName="newImageDescription" class="form-control" id="new_image_description" rows="3" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="image_category">Category</label>
+      <input formControlName="newImageCategory" type="text" class="form-control" id="new_image_category" maxlength="40" required>
+    </div>
+    <div class="form-group">
+      <label for="new_image_select">Choose a image</label>
+      <input name="newImageSelect" type="file" class="form-control-file" id="new_image_select" accept="image/*" 
+        (change)="onFileChange($event)" required>
+    </div>
+    <div class="container-fluid text-center mt-5">
+      <button type="submit" class="btn btn-primary text-center mt-2">Update</button>
+    </div>
+  </form>
+  <!-- Update image to the DB -->
+
+</div>
