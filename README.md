@@ -4,7 +4,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Serve in your server
 
-Install node_modules directory and then install the following modules
+First import the ossianapp.sql file i left you in the repository into your database
+
+Then install node_modules directory and then install the following modules
 
 //--------------Angular material imports--------------------<br>
 import { MatAutocompleteModule } from '@angular/material/autocomplete';<br>
